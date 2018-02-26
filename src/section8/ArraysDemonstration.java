@@ -2,6 +2,7 @@ package section8;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Created by jzong on 2/24/18.
@@ -112,13 +113,64 @@ public class ArraysDemonstration {
 
     /* Demonstration of Array util functions */
     static void arrayUtils() {
-        Integer[] testArray = { 5, 2, 18, 7, -9, 27, 3, 12, 16, 8 };
+        Integer[] testArray = { 5, 2, 18, 1, -9, 27, 3, 12, 16, 8 };
 
         // Arrays.asList -- converts an Array into List
         List<Integer> convertedList = Arrays.asList(testArray);
         for (int elem : convertedList) {
             System.out.format("%d ", elem);
         }
+        System.out.println();
+
+        // Arrays.toString -- represents an Array as String
+        // Arrays.binarySearch -- performs binary search on sorted array, supports custom Comparator
+        int[] sortedPrimes = { 2, 3, 5, 7, 11, 13 };
+        String primesList = Arrays.toString(sortedPrimes);
+        System.out.format("List of primes: %s%n", primesList);
+        System.out.format("Result from searching for 7: %1$d -> found at index %1$d.%n",
+                Arrays.binarySearch(sortedPrimes, 7));
+        int idx = Arrays.binarySearch(sortedPrimes, 6);
+        System.out.format("Result from searching for 6: %d -> not found in array, but *would* be %dth if it existed.%n",
+                idx, -idx);
+
+        // Arrays.equal -- performs element-by-element equality check
+        int[] sortedPrimesNew = { 2, 3, 5, 7, 11, 13 };
+        System.out.format("sortedPrimes and sortedPrimesNew are equal (==): %b%n", sortedPrimes == sortedPrimesNew);
+        System.out.format("Same two arrays are equal by elements: %b%n", Arrays.equals(sortedPrimes, sortedPrimesNew));
+
+        // Arrays.fill -- fills an array (optional start..end range) with a designated value
+        String[] stringArray = new String[5];
+        Arrays.fill(stringArray, "Java");                   // Fills the entire array (0..5)
+        Arrays.fill(stringArray, 1, 4, "Awesome");          // Fills indexes 1..4
+        for (int i = 0; i < stringArray.length; i++) {
+            System.out.format("%s ", stringArray[i]);
+        }
+        System.out.println();
+
+        // Arrays.parallelPrefix -- performs prefix-"sum" on an array, potentially in parallel
+        // Requires that the binary operator is associative
+        int[] testValues = { 1, 6, 2, 29 };
+        Arrays.parallelPrefix(testValues, (x,y) -> x+y);
+        System.out.format("Result of prefix sum : %s%n", Arrays.toString(testValues));
+
+        // Arrays.parallelSetAll -- sets values in an array based on a function that takes in the index
+        int[] multiplesOfThree = new int[8];
+        Arrays.parallelSetAll(multiplesOfThree, i -> i*3);
+        System.out.format("Multiples of three: %s%n", Arrays.toString(multiplesOfThree));
+
+        // Arrays.parallelSort -- sorts an array using parallel sort
+        // Arrays.sort         -- sorts an array using quicksort (unstable)
+        // Both can optionally take in sort range and Comparator
+        int[] values = { 12, 4, -9, 1, 6 };
+        Arrays.parallelSort(values, 0, 2);              // Only sort the first two values
+        System.out.format("Partially sorted array: %s%n", Arrays.toString(values));
+        Arrays.sort(values);                            // Sort the whole array
+        System.out.format("Fully sorted array: %s%n", Arrays.toString(values));
+
+        // Arrays.stream -- returns a sequential Stream based on values in the array (with optional index range)
+        IntStream valuesStream = Arrays.stream(values);
+        int[] evenValues = valuesStream.filter(v -> v % 2 == 0).toArray();
+        System.out.format("Even values in valuesStream: %s%n", Arrays.toString(evenValues));
     }
 
     public static void main(String[] argv) {
