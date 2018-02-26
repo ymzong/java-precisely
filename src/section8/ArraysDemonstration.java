@@ -2,6 +2,9 @@ package section8;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.DoubleFunction;
 import java.util.stream.IntStream;
 
 /**
@@ -173,9 +176,85 @@ public class ArraysDemonstration {
         System.out.format("Even values in valuesStream: %s%n", Arrays.toString(evenValues));
     }
 
+    /* Compare performance between quicksort and parallel sort */
+    static void parallelVsSequentialSort() {
+        final int ARRAY_LEN = 50000000;
+        double[] sequentialArray;
+        double[] parallelArray;
+        // Initialize both arrays with random values by using Random util
+        sequentialArray = new Random().doubles(ARRAY_LEN).toArray();
+        parallelArray = new Random().doubles(ARRAY_LEN).toArray();
+
+        long startTime = System.currentTimeMillis();
+        Arrays.sort(sequentialArray);
+        long endTime = System.currentTimeMillis();
+        System.out.format("Time elapsed for quicksort: %dms%n", endTime - startTime);       // 5320ms
+
+        startTime =  System.currentTimeMillis();
+        Arrays.parallelSort(parallelArray);
+        endTime = System.currentTimeMillis();
+        System.out.format("Time elapsed for parallel sort: %dms%n", endTime - startTime);   // 1742ms
+    }
+
+    /* Simulates Brownian motion in 1D and accumulates max deviation */
+    static void brownianMotionSimulation() {
+        final int STEP_COUNT = 20000000;
+        double[] steps = new Random().doubles(STEP_COUNT, -1d, 1.0).toArray();    // Generate step values within [-1, 1]
+        Arrays.parallelPrefix(steps, (x,y) -> x+y);                     // prefix-sum step values to get Brownian motion
+        double maxDeviation = Arrays.stream(steps).map(Math::abs).max().getAsDouble();  // Get max deviation from stream
+
+        System.out.format("Over %d steps of Brownian motion (1D):%n", STEP_COUNT);
+        System.out.format("max deviation was %.6f%n", maxDeviation);
+        System.out.format("final deviation was %.6f%n", steps[STEP_COUNT-1]);
+    }
+
+    /* Simulates Brownian motion in 2D and accumulates max deviation */
+    static void brownianMotionSimulation2D() {
+        final int STEP_COUNT = 20000000;
+        Vect2D[] steps = new Vect2D[STEP_COUNT];
+        Arrays.parallelSetAll(steps, i -> Vect2D.createRandomVect2D()); // Generate random 2D coord objects in parallel
+        Arrays.parallelPrefix(steps, (p, q) -> p.add(q));               // Calculate "prefix-sum" with custom function
+        double maxDeviation = Arrays.stream(steps).mapToDouble(elem -> elem.length()).max().getAsDouble();
+
+        System.out.format("Over %d steps of Brownian motion (2D):%n", STEP_COUNT);
+        System.out.format("max deviation was %.6f%n", maxDeviation);
+        System.out.format("final deviation was %.6f%n", steps[STEP_COUNT-1].length());
+    }
+
+    static void arraysPractice() {
+        parallelVsSequentialSort();
+        brownianMotionSimulation();
+        brownianMotionSimulation2D();
+    }
+
     public static void main(String[] argv) {
         arrayInitialization();
         multiDimensionalArrays();
         arrayUtils();
+        arraysPractice();
+    }
+}
+
+/* This class represents a 2D coordinate with a thread-safe initialization function */
+class Vect2D {
+    public double x, y;
+
+    public Vect2D(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Double length() {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    public Vect2D add(Vect2D that) {
+        return new Vect2D(this.x + that.x, this.y + that.y);
+    }
+
+    public static Vect2D createRandomVect2D() {
+        double x = ThreadLocalRandom.current().nextDouble(-1.0, 1.0);
+        double y = ThreadLocalRandom.current().nextDouble(-1.0, 1.0);
+        return new Vect2D(x, y);
     }
 }
