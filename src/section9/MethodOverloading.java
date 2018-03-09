@@ -19,7 +19,7 @@ public class MethodOverloading {
         return x + y + 1;
     }
 
-    /* Cannot have the following method, otherwise calling m(12, 12) would be illegal!
+    /* Cannot have the following method, otherwise calling m(12, 12) would be illegal (since it's ambiguous)!
     static double m(double x, int y) {
         return x + y + 1;
     }
