@@ -35,5 +35,10 @@ public class MethodOverloading {
         System.out.format("m(10.0, 20)=%f%n", m(10.0, 20));     // 33.0 -- most specific signature is m(double, double)
         System.out.format("m(10, 20.0)=%f%n", m(10, 20.0));     // 31.0 -- most specific signature is m(int, double)
         System.out.format("m(10.0, 20.0)=%f%n", m(10.0, 20.0)); // 33.0 -- most specific signature is m(double, double)
+
+        // Constructor can be overloaded too
+        PointEnhanced pe = new PointEnhanced(5, 12);
+        PointEnhanced pe_copy = new PointEnhanced(pe);      // Creates a copy of the previous PointEnhanced
+        System.out.println(pe_copy);
     }
 }
