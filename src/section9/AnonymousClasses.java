@@ -22,7 +22,7 @@ public class AnonymousClasses {
 
     /* Explicit definition of SuffixIterator class that implements Iterator<String> interface */
     static Iterator<String> suffixesExplicit(final String s) {
-        // Define a non-static local class
+        // Define a non-static local class; "static" modifier cannot be used here.
         class SuffixIterator implements Iterator<String> {
             int startIdx = 0;
 

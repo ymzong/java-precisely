@@ -5,7 +5,7 @@ package section9;
  *
  * Created by jzong on 2/27/18.
  */
-class BasicPoint {
+public class BasicPoint {
     // Two non-static fields
     int x, y;
 
@@ -16,7 +16,7 @@ class BasicPoint {
     }
 
     // non-static method
-    void move(int dx, int dy) {
+    public void move(int dx, int dy) {
         x += dx;
         y += dy;
     }
