@@ -38,8 +38,21 @@ public class BasicOperators {
         System.out.format("bp1: %s%n", bp1);
         BasicPoint bp2 = bp1;
         System.out.format("bp2: %s%n", bp2);
+
         bp2.move(5, 5);
         System.out.format("bp2 after move: %s%n", bp2);
         System.out.format("bp1 after bp2 move: %s%n", bp1);
+
+        /**
+         * instanceof tells whether the type of value is subtype of given type; false if value is none
+         */
+        Number n1 = new Integer(17);
+        Number n2 = new Double(Math.PI);
+        Double n3 = null;
+
+        System.out.format("n1 instanceof Number: %b%n", n1 instanceof Number);  // Integer is subtype of Number
+        System.out.format("n1 instanceof Double: %b%n", n1 instanceof Double);  // Integer is *not* subtype of Double
+        System.out.format("n3 (null) instanceof Number: %b%n", n3 instanceof Number);   // null ref always gives false
+        System.out.format("n2 instanceof Double: %b%n", n2 instanceof Double);  // Exact type match
     }
 }
