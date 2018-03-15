@@ -10,8 +10,8 @@ import java.util.function.Supplier;
  * Created by jzong on 3/14/18.
  */
 public class LambdaExpressions {
-    public static void main(String[] argv) {
-        /* Defining lots of Lambda functions for use later */
+    static void basicLambdaExpressions() {
+        /* Defining lots of lambda functions for use later: Function, BiFunction, Supplier, Consumer */
         // Function<T1, T2> takes in T1 and returns T2
         // The following four functions are equivalent -- String to Integer parser
         Function<String, Integer>
@@ -47,5 +47,40 @@ public class LambdaExpressions {
         Consumer<String>
                 display1 = s -> System.out.println(">>> " + s + " <<<"),
                 display2 = s -> { System.out.println(">>> " + s + " <<<"); };
+
+        /* Calling lambda functions above */
+        System.out.println(parseInt1.apply("12345"));
+        System.out.println(substr2.apply("foobar", 3)); // automatic boxing int -> Integer
+        System.out.println(concat.apply("foo", "bar"));
+        System.out.println(now.get());                  // call Supplier with get()
+        display2.accept("lambda expressions");          // call Consumer with accept()
+
+        /* Type of functional interface determines what parameters can be passed in */
+        System.out.println(arrayConcat3.apply(new String[] { "a", "b", "c" }));
+        // The following is illegal because the type of arrayConcat3 is Function<String[], String>
+        // String illegal = arrayConcat3.apply("a", "b", "c");
+    }
+
+    static void higherOrderLambda() {
+        /* Lambdas can also appear in argument type and return type, thereby creating higher-order lambdas */
+        // Curried string concat function
+        Function<String, Function<String, String>>
+                prefix = s1 -> s2 -> s1 + s2;
+        Function<String, String> dollarPrefix = prefix.apply("$");
+        System.out.println(prefix.apply("$").apply("1024.00"));
+        System.out.println(dollarPrefix.apply("1024.00"));
+
+        // Apply the given function twice to the string
+        BiFunction<Function<String, String>, String, String>
+                applyTwice = (fn, s) -> fn.apply(fn.apply(s));
+        Function<String, String>
+                doubleDollarPrefix = s -> applyTwice.apply(dollarPrefix, s);
+        System.out.println(applyTwice.apply(dollarPrefix, "1024.00"));
+        System.out.println(doubleDollarPrefix.apply("1024.00"));
+    }
+
+    public static void main(String[] argv) {
+        basicLambdaExpressions();
+        higherOrderLambda();
     }
 }
