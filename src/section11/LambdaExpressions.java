@@ -10,8 +10,9 @@ import java.util.function.Supplier;
  * Created by jzong on 3/14/18.
  */
 public class LambdaExpressions {
+
+    /* Defining lots of lambda functions for use later: Function, BiFunction, Supplier, Consumer */
     static void basicLambdaExpressions() {
-        /* Defining lots of lambda functions for use later: Function, BiFunction, Supplier, Consumer */
         // Function<T1, T2> takes in T1 and returns T2
         // The following four functions are equivalent -- String to Integer parser
         Function<String, Integer>
@@ -61,8 +62,8 @@ public class LambdaExpressions {
         // String illegal = arrayConcat3.apply("a", "b", "c");
     }
 
+    /* Lambdas can also appear in argument type and return type, thereby creating higher-order lambdas */
     static void higherOrderLambda() {
-        /* Lambdas can also appear in argument type and return type, thereby creating higher-order lambdas */
         // Curried string concat function
         Function<String, Function<String, String>>
                 prefix = s1 -> s2 -> s1 + s2;
@@ -79,8 +80,37 @@ public class LambdaExpressions {
         System.out.println(doubleDollarPrefix.apply("1024.00"));
     }
 
+    /* Lambda expressions need to have a target function type, and it could come from variable type,
+     * method parameter type, method return type, or explicit cast. */
+    static void lambdaExpressionType() {
+        // The following are okay since variable type is Consumer<String>
+        Consumer<String> println = s -> System.out.println(s);
+        Consumer<String> doublePrintln = println.andThen(println);
+        doublePrintln.accept("foobar");
+
+        // The below is okay since the lambda expression is the argument for println.andThen()
+        // As a result, the type Consumer<String> is enforced
+        Consumer<String> doublePrintln2 = println.andThen(s -> System.out.println(s));
+        doublePrintln2.accept("Java");
+
+        // The following is illegal since the lambda expression has no bound type
+        // (s -> System.out.println(s)).apply("type missing");
+
+        // The above can be "fixed" with explicit cast
+        ((Consumer<String>)(s -> System.out.println(s))).accept("bad style but legal");
+
+        // Lastly, the type can also come from method return type
+        getPrintlnFn().accept("lambda");
+    }
+
+    // The type of labmda expression is bound to the return type of the method
+    static Consumer<String> getPrintlnFn() {
+        return s -> System.out.println(s);
+    }
+
     public static void main(String[] argv) {
         basicLambdaExpressions();
         higherOrderLambda();
+        lambdaExpressionType();
     }
 }

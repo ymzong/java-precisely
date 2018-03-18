@@ -15,8 +15,9 @@ public class MethodReference {
         return (upper ? "0123456789ABCDEF" : "0123456789abcdef")::charAt;
     }
 
+    /* Use of different types of method references */
     static void methodRefExamples() {
-        /* Use of different types of method references */
+
         // Reference to static method via t::m
         Function<String, Integer> parseInt = Integer::parseInt;                         // Integer.parseInt("12345")
 
@@ -59,8 +60,34 @@ public class MethodReference {
         System.out.format("Value supplied by C.getBVal(): %d%n", getBValFromObject.get());  // 10 from B.getVal()
     }
 
+    /* Similar to lambda expressions, method references need to have target function type, and it can come from
+     * variable type, method argument type, method return type, or explicit cast. */
+    static void methodRefType() {
+        // The following is okay since variable type provides type
+        Function<Double, String> toHex = Double::toHexString;
+
+        // The following is okay since method reference is the argument to a method that supplies type
+        int hexLen = toHex.andThen(String::length).apply(11.7);
+
+        // The following is illegal since the method reference (Double::toString) has no bound type
+        // int illegalExp = (Double::toString).andThen(String::length).apply(123.5);
+
+        // The above can be 'fixed' with explicit casting
+        int hexStringLen = ((Function<Double, String>)(Double::toHexString)).andThen(String::length).apply(123.5);
+        System.out.println(hexStringLen);
+
+        // Lastly, type can also come from method return type
+        System.out.println(getStringLenFn().apply("foobar"));
+    }
+
+    // The type of method reference is bound to the return type of this method
+    static Function<String, Integer> getStringLenFn() {
+        return String::length;
+    }
+
     public static void main(String[] argv) {
         methodRefExamples();
+        methodRefType();
     }
 }
 
