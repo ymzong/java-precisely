@@ -27,7 +27,7 @@ public class MethodOverriding {
          * - both allowed
          */
         // Trivial section with only C1
-        nativeC1.m1(d);     // Calls static C1.m1 due to matching signature
+        C1.m1(d);     // Calls static C1.m1 due to matching signature
         nativeC1.m1(i);     // Calls non-static C1.m1 due to more specific signature
         nativeC1.m1(ii);    // Calls non-static C1.m1 after unboxing
         nativeC1.m2(i);     // Trivial due to exact signature match
@@ -41,7 +41,7 @@ public class MethodOverriding {
          */
 
         System.out.println();
-        c2AsC1.m1(d);       // Target Type: C1; Target Sig: static m1(d);           Result: C1.m1(d)
+        C1.m1(d);       // Target Type: C1; Target Sig: static m1(d);           Result: C1.m1(d)
         c2AsC1.m1(i);       // Target Type: C1; Target Sig: m1(int);                Result: C2.m1(int)
         c2AsC1.m1(ii);      // Target Type: C1; Target Sig: m1(int) after unboxing; Result: C2.m1(int)
         c2AsC1.m2(i);       // Target Type: C1; Target Sig: m2(int);       Result: C1.m2(int) since no unboxing at first
@@ -52,7 +52,7 @@ public class MethodOverriding {
          */
         System.out.println();
         c2.m1(i);           // Target Type: C2; Target Sig: m1(int);                Result: C2.m1(int)
-        c2.m1(d);           // Target Type: C2; Target Sig: static m1(double);      Result: C2.m1(double)
+        C2.m1(d);           // Target Type: C2; Target Sig: static m1(double);      Result: C2.m1(double)
         c2.m2(i);           // Target Type: C2; Target Sig: m2(int) w/o unboxing;   Result: C1.m2(int)
         c2.m2(ii);          // Target Type: C2; Target Sig: m2(Integer) match;      Result: C2.m2(Integer)
         c2.m3(ii);          // Target Type: C2; Target Sig: m3(int) w/ unboxing;    Result: C2.m3(int)
