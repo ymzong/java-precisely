@@ -12,7 +12,7 @@ public class FieldDeclarationOverride {
         BaseClass b = new BaseClass(100);
         System.out.format("B as BaseClass: vf=%d, sf=%d.%n",
                 b.vf,           // b.vf=100 due to constructor of BaseClass
-                BaseClass.sf            // b.sf=101 due to constructor of BaseClass
+                b.sf            // b.sf=101 due to constructor of BaseClass
         );
 
         /* Instantiate ExtendedClass and examine its fields as is and as BaseClass */
@@ -20,11 +20,11 @@ public class FieldDeclarationOverride {
         BaseClass eAsB = e;
         System.out.format("E as ExtendedClass: vf=%d, sf=%d.%n",
                 e.vf,           // e.vf=200 despite super(n+20), since the following line vf=n defines its *own* copy
-                ExtendedClass.sf            // e.sf=202 due to sf=n+2; super(n+20) sets the static field of BaseClass
+                e.sf            // e.sf=202 due to sf=n+2; super(n+20) sets the static field of BaseClass
         );
         System.out.format("E as BaseClass: vf=%d, sf=%d.%n",
                 eAsB.vf,        // eAsB.vf=220 due to super(n+20), which instantiates the field of BasicClass
-                BaseClass.sf         // eAsB.sf=221 due to super(n+20), which sets BaseClass.sf as 121
+                eAsB.sf         // eAsB.sf=221 due to super(n+20), which sets BaseClass.sf as 121
         );
 
         /* Instantiate FurtherExtendedClass and examine its fields as is ans as superclasses */
@@ -33,15 +33,15 @@ public class FieldDeclarationOverride {
         BaseClass fAsB = f;
         System.out.format("F as FurtherExtendedClass: vf=%d, sf=%d.%n",
                 f.vf,           // f.vf=300 despite super(n+40); vf=n sets the field in FurtherExtendedClass
-                ExtendedClass.sf            // f.sf=304 despite super(n+40); sf=n+4 sets the field in ExtendedClass(!)
+                f.sf            // f.sf=304 despite super(n+40); sf=n+4 sets the field in ExtendedClass(!)
         );
         System.out.format("F as ExtendedClass: vf=%d, sf=%d.%n",
                 fAsE.vf,        // fAsE.vf=340 due to super(n+40)
-                ExtendedClass.sf         // fAsE.sf=304, since super(n+40) and sf=n+4 both modify the field of ExtendedClass(!)
+                fAsE.sf         // fAsE.sf=304, since super(n+40) and sf=n+4 both modify the field of ExtendedClass(!)
         );
         System.out.format("F as BaseClass: vf=%d, sf=%d.%n",
                 fAsB.vf,        // fAsB.vf=360 due to super(n+40) invoking super(n+20)
-                BaseClass.sf         // fAsB.sf=361 due to super(n+40) invoking super(n+20), which sets BaseClass.sf as 361
+                fAsB.sf         // fAsB.sf=361 due to super(n+40) invoking super(n+20), which sets BaseClass.sf as 361
         );
     }
 }
