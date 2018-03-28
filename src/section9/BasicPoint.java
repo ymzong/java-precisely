@@ -7,7 +7,7 @@ package section9;
  */
 public class BasicPoint {
     // Two non-static fields
-    int x, y;
+    public int x, y;
 
     // One constructor
     public BasicPoint(int x, int y) {
