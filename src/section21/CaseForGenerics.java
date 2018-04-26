@@ -8,7 +8,10 @@ import java.util.ArrayList;
 public class CaseForGenerics {
 
     public static void main(String[] argv) {
-        /* ArrayList without generics, where every entry is of Object type */
+        /**
+         * ArrayList without generics, where every entry is of Object type.
+         * In the modern context, it is the Raw Type for ArrayList<T>, equivalent to ArrayList<Object>.
+         */
         ArrayList names = new ArrayList();
         names.add("Peter");
         names.add("Jimmy");
@@ -25,7 +28,7 @@ public class CaseForGenerics {
         coolList.add("Peter");
         coolList.add("Jimmy");
         //coolList.add(42);             // compile-time error would be triggered due to type mismatch
-        String name = coolList.get(1);  // guaranteed to be safe thanks to generics
+        String name = coolList.get(1);  // guaranteed to be safe thanks to generics; implicit cast still performed
     }
 
 }
