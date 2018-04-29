@@ -1,9 +1,11 @@
 package section21;
 
+import java.util.Iterator;
+
 /**
  * This class implements a generic doubly-linked list with common operations.
  */
-public class MyLinkedList<T> {
+public class MyLinkedList<T> implements Iterable<T> {
 
     /**
      * Static nested class that presents a node in the linked list; also generic.
@@ -23,19 +25,31 @@ public class MyLinkedList<T> {
         length = 0;
     }
 
-    /* Constructor that takes in a vararg of values to populate */
+    /* Constructor that takes in a vararg of values to populate; O(n) */
     public MyLinkedList(T... values) {
         for (T val : values) {
             append(val);
         }
     }
 
-    /* Append an element to the end of the linked list */
+    /* Append an element to the end of the linked list; O(1) */
     public void append(T value) {
-        insert(length, value);
+        length++;
+
+        MyNode<T> newNode = new MyNode<>();
+        newNode.value = value;
+        newNode.next = null;
+        newNode.prev = tail;
+
+        if (tail != null) {         // non-empty linked list
+            tail.next = newNode;
+        } else {                    // empty linked list
+            head = newNode;
+            tail = newNode;
+        }
     }
 
-    /* Insert an element to the linked list, such that the value will appear at index idx */
+    /* Insert an element to the linked list, such that the value will appear at index idx; worst case O(n) */
     public void insert(int idx, T value) {
         if (idx < 0 || idx > length) {
             throw new IndexOutOfBoundsException("insert() out of bound for idx = " + idx);
@@ -52,12 +66,12 @@ public class MyLinkedList<T> {
             tail = newNode;
             return;
         }
-        if (idx == 0) {          // special case for inserting to head
+        if (idx == 0) {                 // special case for inserting to head
             newNode.next = head;
             head = newNode;
             return;
         }
-        if (idx == length-1) {   // special case for inserting to tail
+        if (idx == length - 1) {        // special case for inserting to tail
             newNode.prev = tail;
             tail = newNode;
             return;
@@ -108,5 +122,56 @@ public class MyLinkedList<T> {
             tail.prev.next = null;
             tail = tail.prev;
         }
+    }
+
+    /* Get the head node value in the linked list */
+    public T getHeadValue() {
+        if (head == null) {
+            throw new IllegalStateException("getHeadValue() for empty linked list!");
+        }
+        return head.value;
+    }
+
+    /* Get the tail node value in the linked list */
+    public T getTailValue() {
+        if (tail == null) {
+            throw new IllegalStateException("getTailValue() for empty linked list!");
+        }
+        return tail.value;
+    }
+
+    /* Get an iterator for the current state of the linked list */
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            /* Private pointer for the value to be returned next */
+            private MyNode<T> current = head;   // shorthand for MyLinkedList.this.head
+
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            public T next() {
+                T result = current.value;
+                current = current.next;
+                return result;
+            }
+        };
+    }
+
+    /* Get an iterator for the current state of the linked list in reverse order */
+    public Iterator<T> iteratorReversed() {
+        return new Iterator<T>() {
+            private MyNode<T> current = tail;
+
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            public T next() {
+                T result = current.value;
+                current = current.prev;
+                return result;
+            }
+        };
     }
 }
