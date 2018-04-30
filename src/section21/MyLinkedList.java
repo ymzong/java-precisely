@@ -32,6 +32,10 @@ public class MyLinkedList<T> implements Iterable<T> {
         }
     }
 
+    public int getLength() {
+        return length;
+    }
+
     /* Append an element to the end of the linked list; O(1) */
     public void append(T value) {
         length++;
@@ -43,6 +47,7 @@ public class MyLinkedList<T> implements Iterable<T> {
 
         if (tail != null) {         // non-empty linked list
             tail.next = newNode;
+            tail = newNode;
         } else {                    // empty linked list
             head = newNode;
             tail = newNode;
@@ -68,11 +73,13 @@ public class MyLinkedList<T> implements Iterable<T> {
         }
         if (idx == 0) {                 // special case for inserting to head
             newNode.next = head;
+            head.prev = newNode;
             head = newNode;
             return;
         }
         if (idx == length - 1) {        // special case for inserting to tail
             newNode.prev = tail;
+            tail.next = newNode;
             tail = newNode;
             return;
         }
@@ -173,5 +180,23 @@ public class MyLinkedList<T> implements Iterable<T> {
                 return result;
             }
         };
+    }
+
+    /* Visualize the linked list for debugging purposes */
+    public String toString() {
+        if (length == 0) {
+            return "MyLinkedList<T>(empty)";
+        }
+
+        StringBuilder forwardSb = new StringBuilder("|");
+        iterator().forEachRemaining(elem -> { forwardSb.append(elem); forwardSb.append("|"); } );
+        StringBuilder backwardSb = new StringBuilder("|");
+        iteratorReversed().forEachRemaining(elem -> { backwardSb.append(elem); backwardSb.append("|"); } );
+
+        String result = String.format("MyLinkedList<T>(length = %d):%n" +
+            "head = %s, tail = %s%n" + "forwardIter = %s, backwardIter = %s",
+                length, head.value, tail.value, forwardSb.toString(), backwardSb.toString());
+
+        return result;
     }
 }
