@@ -5,7 +5,7 @@ import java.util.Iterator;
 /**
  * This class implements a generic doubly-linked list with common operations.
  */
-public class MyLinkedList<T> implements Iterable<T> {
+public class MyLinkedList<T> implements MyList<T> {
 
     /**
      * Static nested class that presents a node in the linked list; also generic.
@@ -145,6 +145,15 @@ public class MyLinkedList<T> implements Iterable<T> {
             throw new IllegalStateException("getTailValue() for empty linked list!");
         }
         return tail.value;
+    }
+
+    /* Creates a new linked list by mapping each of its elements */
+    public <U> MyList<U> map(MapperFn<T,U> fn) {
+        MyLinkedList<U> newList = new MyLinkedList<>();
+        for (T elem : this) {
+            newList.append(fn.call(elem));
+        }
+        return newList;
     }
 
     /* Get an iterator for the current state of the linked list */
