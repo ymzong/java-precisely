@@ -208,4 +208,33 @@ public class MyLinkedList<T> implements MyList<T> {
 
         return result;
     }
+
+    /* Tests equality between this linked list and another object / linked list */
+    @SuppressWarnings("unchecked")
+    public boolean equals(Object o) {
+        // Basic edge cases
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+
+        MyList<T> that = (MyList<T>) o;     // unchecked cast, but previous checks make sure it's okay
+
+        if (this.getLength() != that.getLength()) {
+            return false;
+        }
+
+        Iterator<T> thisIter = this.iterator();
+        Iterator<T> thatIter = that.iterator();
+        while (thisIter.hasNext()) {
+            if (!thisIter.next().equals(thatIter.next())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }
