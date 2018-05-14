@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * This examples demonstrates key methods exposed by List<T> interface, as well as extra methods implemented by
+ * This example demonstrates key methods exposed by List<T> interface, as well as extra methods implemented by
  * ArrayList and LinkedList.
  */
 public class ListMethods {
