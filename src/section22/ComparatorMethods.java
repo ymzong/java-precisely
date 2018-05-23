@@ -52,7 +52,7 @@ public class ComparatorMethods {
         // Note: need to specify type argument below for type inference (https://stackoverflow.com/q/50442956/2448960)
         Comparator<String> secondCharThenStringCmp = Comparator
                 .<String>comparingInt(s -> s.charAt(1))
-                .thenComparing(Comparator.<String>naturalOrder());
+                .thenComparing(Comparator.naturalOrder());
         testComparator(secondCharThenStringCmp);
     }
 
