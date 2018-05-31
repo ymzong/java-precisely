@@ -39,8 +39,8 @@ public class ImmutableList<T> {
     }
 
     /* Prepends a value to the linked list, and returns a new immutable linked list - O(1) */
-    public ImmutableList<T> cons(T val) {
-        Node<T> newHead = new Node<T>(val, head);
+    public static <T> ImmutableList<T> cons(T val, ImmutableList<T> original) {
+        Node<T> newHead = new Node<T>(val, original.head);
         ImmutableList<T> newList = new ImmutableList<>(newHead);
         return newList;
     }
@@ -86,11 +86,12 @@ public class ImmutableList<T> {
 
         while (iter != null) {
             mappedValues.push(fn.apply(iter.data));
+            iter = iter.next;
         }
 
         ImmutableList<W> result = new ImmutableList<>();
         while (!mappedValues.isEmpty()) {
-            result = result.cons(mappedValues.pop());
+            result = cons(mappedValues.pop(), result);
         }
         return result;
     }
@@ -119,7 +120,7 @@ public class ImmutableList<T> {
 
         // add in original prefix
         while (!prefix.isEmpty()) {
-            result = result.cons(prefix.pop());
+            result = cons(prefix.pop(), result);
         }
 
         return result;
@@ -131,7 +132,7 @@ public class ImmutableList<T> {
 
         Node<T> iter = head;
         while (iter != null) {
-            result = result.cons(iter.data);
+            result = cons(iter.data, result);
             iter = iter.next;
         }
 
@@ -140,15 +141,15 @@ public class ImmutableList<T> {
 
     /* Returns a String representation of the linked list */
     public String toString() {
-        StringBuilder resultBuffer = new StringBuilder("ImmutableList(");
+        StringBuilder resultBuffer = new StringBuilder("ImmutableList:");
 
         Node<T> node = head;
         while (node != null) {
+            resultBuffer.append("\t");
             resultBuffer.append(node.data);
-            resultBuffer.append(" - ");
+            node = node.next;
         }
 
-        resultBuffer.delete(resultBuffer.length() - 3, resultBuffer.length()).append(")");
         return resultBuffer.toString();
     }
 }
