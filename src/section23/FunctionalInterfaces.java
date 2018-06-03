@@ -1,9 +1,8 @@
 package section23;
 
 
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.UnaryOperator;
+import java.math.BigInteger;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,6 +57,12 @@ public class FunctionalInterfaces {
         // UnaryOperator<T> is pretty much shorthand for Function<T,T>
         UnaryOperator<String> repeatStringUnary = s -> s + s;
         print(repeatStringUnary.apply("tacocat️"));
+
+        // Predicate<T> and BiPredicate<T,U> are for Functions that map to boolean
+        Predicate<String> isUpper = s -> s.equals(s.toUpperCase());
+        BiPredicate<String, String> isEqualIgnoreCase = (s, t) -> s.toUpperCase().equals(t.toUpperCase());
+        print(isUpper.test("GNARRRR"));
+        print(isEqualIgnoreCase.test("mysql", "MySQL"));
     }
 
     /* The following two methods apply two functions to map every element in the stream */
@@ -140,10 +145,51 @@ public class FunctionalInterfaces {
         return (n > 0) ? positiveNumber : "negative " + positiveNumber;
     }
 
+    static void consumerSupplierExamples() {
+        // Consumer<T> takes in single arg T and doesn't return anything
+        Consumer<String> printString = System.out::println;
+        Consumer<String> printFullVersion = s -> System.out.println("Java " + s);
+
+        Stream<String> versions = Stream.of("8", "9", "10");
+        versions.forEach(printString.andThen(printFullVersion));
+
+        // Supplier<T> doesn't take in arguments and returns a T
+        // Here, we use explicit instantiation to keep some private state in the Supplier (similar to Iterator)
+        IntSupplier naturalNumberSupplier = new IntSupplier() {
+            private int nextNumber = 0;     // keeps track of next number to return
+            @Override
+            public int getAsInt() {
+                return (nextNumber++);
+            }
+        };
+
+        // Another way to achieve the same is to keep the state externally
+        final int[] nextNum = { 0 };                                        // to be updated by Supplier
+        IntSupplier naturalNumberSupplier2 = () -> nextNum[0]++;
+
+        // The example above can be modified to a Supplier of Fibonacci numbers
+        final BigInteger[] nextFibs = { BigInteger.ZERO, BigInteger.ONE };  // to be updated by Supplier
+        Supplier<BigInteger> fibonacciSupplier = () -> {
+            BigInteger result = nextFibs[0];
+            BigInteger nextFib = nextFibs[0].add(nextFibs[1]);
+            nextFibs[0] = nextFibs[1];
+            nextFibs[1] = nextFib;
+            return result;
+        };
+
+        for (int i = 0; i < 10; i++) {
+            print(naturalNumberSupplier.getAsInt());
+            print(naturalNumberSupplier2.getAsInt());
+            print(fibonacciSupplier.get());
+        }
+    }
+
     public static void main(String[] argv) {
         functionExamples();
         print(convertNumberToEnglish(-7744196));
         print(convertNumberToEnglish(Integer.MAX_VALUE));
+
+        consumerSupplierExamples();
     }
 
     private static void print(Object o) {
