@@ -2,6 +2,8 @@ package section23;
 
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -184,12 +186,40 @@ public class FunctionalInterfaces {
         }
     }
 
+    static void biFunctionExamples() {
+        // BiFunction<T,U,R> takes in T and U and returns R
+        BiFunction<String, String, String> upperConcatStrings = (s, t) -> s.toUpperCase() + t.toUpperCase();
+        print(upperConcatStrings.apply("foo", "bar"));
+
+        // BinaryOperator<T> is pretty much BiFunction<T,T,T> (plus some static methods)
+        BinaryOperator<String> lowerConcatStrings = (s, t) -> s.toLowerCase() + t.toLowerCase();
+        print(lowerConcatStrings.apply("Elastic", "Search"));
+
+        // BinaryOperator can also be initialized specially for comparison by taking in a Comparator
+        BinaryOperator<String> maxString = BinaryOperator.maxBy(Comparator.naturalOrder());
+        print(maxString.apply("Hadoop", "Spark"));
+    }
+
+    /* This interface represents a function that takes in a vararg of T and returns U */
+    interface VarargFunction<T,U> extends Function<T[], U> {
+        U apply(T... args);
+    }
+
+    static void varargFunctionalInterface() {
+        // Same logic as in section11.LambdaExpressions, but declared in different type
+        VarargFunction<String, String> concat = ss -> String.join(",", ss);
+        print(concat.apply("a", "b", "c"));
+    }
+
     public static void main(String[] argv) {
         functionExamples();
         print(convertNumberToEnglish(-7744196));
         print(convertNumberToEnglish(Integer.MAX_VALUE));
 
         consumerSupplierExamples();
+        biFunctionExamples();
+
+        varargFunctionalInterface();
     }
 
     private static void print(Object o) {
